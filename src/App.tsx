@@ -132,15 +132,6 @@ function App() {
         </div>
       </div>
 
-      {/* Real-time indicator */}
-      {!loading && (
-        <div className="fixed bottom-4 right-4">
-          <div className="bg-green-500 text-white px-3 py-2 rounded-full text-sm font-medium shadow-lg flex items-center space-x-2">
-            <div className="w-2 h-2 bg-white rounded-full animate-pulse"></div>
-            <span>Live Updates Active</span>
-          </div>
-        </div>
-      )}
     </div>
   )
 }

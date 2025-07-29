@@ -1,5 +1,5 @@
 import React from 'react'
-import { MapPin, Clock, Tag, GraduationCap } from 'lucide-react'
+import { MapPin, Tag, GraduationCap } from 'lucide-react'
 import { Course } from '../lib/supabase'
 
 interface CourseCardProps {
@@ -13,19 +13,6 @@ export default function CourseCard({ course }: CourseCardProps) {
       currency: 'PHP',
       minimumFractionDigits: 0,
     }).format(price)
-  }
-
-  const getDurationColor = (duration: string) => {
-    switch (duration.toLowerCase()) {
-      case 'short':
-        return 'bg-green-100 text-green-800'
-      case 'medium':
-        return 'bg-yellow-100 text-yellow-800'
-      case 'long':
-        return 'bg-blue-100 text-blue-800'
-      default:
-        return 'bg-gray-100 text-gray-800'
-    }
   }
 
   const getBranchColor = (branch: string) => {
@@ -92,10 +79,6 @@ export default function CourseCard({ course }: CourseCardProps) {
           <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getBranchColor(course.branch)}`}>
             <MapPin className="h-3 w-3 mr-1" />
             {course.branch}
-          </span>
-          <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getDurationColor(course.duration)}`}>
-            <Clock className="h-3 w-3 mr-1" />
-            {course.duration}
           </span>
         </div>
 

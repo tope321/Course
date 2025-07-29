@@ -8,7 +8,6 @@ interface FilterSidebarProps {
     branch: string
     technology: string
     program: string
-    duration: string
     priceRange: string
   }
   onFilterChange: (filterType: string, value: string) => void
@@ -24,7 +23,6 @@ export default function FilterSidebar({
 }: FilterSidebarProps) {
   const branches = ['All', 'Pasig', 'Pasay', 'Jalajala']
   const programs = ['All', '2-Year Program', 'Senior High', 'Short Courses']
-  const durations = ['All', 'Short', 'Medium', 'Long']
   const priceRanges = ['All', '₱0-₱5,000', '₱5,001-₱10,000', '₱10,001+']
 
   // Technologies grouped by program
@@ -184,26 +182,6 @@ export default function FilterSidebar({
                 </div>
               </div>
             )}
-
-            {/* Duration Filter */}
-            <div>
-              <h3 className="text-sm font-medium text-gray-900 mb-2">Duration</h3>
-              <div className="space-y-2">
-                {durations.map(duration => (
-                  <label key={duration} className="flex items-center">
-                    <input
-                      type="radio"
-                      name="duration"
-                      value={duration}
-                      checked={filters.duration === duration}
-                      onChange={(e) => onFilterChange('duration', e.target.value)}
-                      className="h-4 w-4 flex-shrink-0 text-blue-600 focus:ring-blue-500 border-gray-300"
-                    />
-                    <span className="ml-2 text-xs text-gray-700">{duration}</span>
-                  </label>
-                ))}
-              </div>
-            </div>
 
             {/* Price Range Filter */}
             <div>

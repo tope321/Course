@@ -9,7 +9,6 @@ interface UseCoursesProps {
     branch: string
     technology: string
     program: string
-    duration: string
     priceRange: string
   }
 }
@@ -66,9 +65,6 @@ export default function useCourses({ searchTerm = '', filters }: UseCoursesProps
       }
       if (filters.program !== 'All') {
         query = query.eq('program', filters.program)
-      }
-      if (filters.duration !== 'All') {
-        query = query.eq('duration', filters.duration)
       }
       if (filters.priceRange !== 'All') {
         switch (filters.priceRange) {

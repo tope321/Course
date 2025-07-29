@@ -4,7 +4,6 @@ interface Filters {
   branch: string
   technology: string
   program: string
-  duration: string
   priceRange: string
 }
 
@@ -13,7 +12,6 @@ export default function useFilters() {
     branch: 'All',
     technology: 'All',
     program: 'All',
-    duration: 'All',
     priceRange: 'All'
   })
 
@@ -26,7 +24,6 @@ export default function useFilters() {
       branch: 'All',
       program: 'All',
       technology: 'All',
-      duration: 'All',
       priceRange: 'All'
     })
   }
