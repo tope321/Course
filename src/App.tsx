@@ -10,6 +10,7 @@ import useFilters from './hooks/useFilters'
 function App() {
   const [searchTerm, setSearchTerm] = useState('')
   const [sidebarOpen, setSidebarOpen] = useState(false)
+  const { filters, updateFilter, clearFilters } = useFilters()
   const { 
     courses, 
     loading, 
@@ -22,8 +23,7 @@ function App() {
     nextPage,
     prevPage,
     goToPage
-  } = useCourses()
-  const { filters, filteredCourses, updateFilter, clearFilters } = useFilters(courses, searchTerm)
+  } = useCourses({ searchTerm, filters })
 
   if (error) {
     return (
@@ -94,7 +94,7 @@ function App() {
           {/* Results summary */}
           <div className="mt-4 text-center">
             <p className="text-sm text-gray-600">
-              Page {currentPage} of {totalPages} • {filteredCourses.length} courses found
+              Page {currentPage} of {totalPages} • {totalCount} courses found
               {searchTerm && (
                 <span> for "{searchTerm}"</span>
               )}
@@ -115,7 +115,7 @@ function App() {
 
           {/* Course Grid */}
           <div className="flex-1 min-w-0">
-            <CourseGrid courses={filteredCourses} loading={loading} />
+            <CourseGrid courses={courses} loading={loading} />
             
             {/* Pagination */}
             <Pagination

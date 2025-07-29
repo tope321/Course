@@ -2,17 +2,35 @@ import { useState, useEffect } from 'react'
 import { supabase, Course } from '../lib/supabase'
 
 const ITEMS_PER_PAGE = 10
-export default function useCourses() {
+
+interface UseCoursesProps {
+  searchTerm?: string
+  filters?: {
+    branch: string
+    technology: string
+    program: string
+    duration: string
+    priceRange: string
+  }
+}
+
+export default function useCourses({ searchTerm = '', filters }: UseCoursesProps = {}) {
   const [courses, setCourses] = useState<Course[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [currentPage, setCurrentPage] = useState(1)
   const [totalCount, setTotalCount] = useState(0)
 
+  // Reset to page 1 when search term or filters change
   useEffect(() => {
-    // Initial fetch
-    fetchCourses()
+    setCurrentPage(1)
+  }, [searchTerm, filters])
 
+  useEffect(() => {
+    fetchCourses()
+  }, [currentPage, searchTerm, filters])
+
+  useEffect(() => {
     // Set up real-time subscription
     const subscription = supabase
       .channel('courses')
@@ -30,24 +48,60 @@ export default function useCourses() {
     }
   }, [])
 
-  useEffect(() => {
-    fetchCourses()
-  }, [currentPage])
+  const buildQuery = () => {
+    let query = supabase.from('courses').select('*', { count: 'exact' })
+
+    // Apply search filter
+    if (searchTerm) {
+      query = query.or(`title.ilike.%${searchTerm}%,description.ilike.%${searchTerm}%,technology.ilike.%${searchTerm}%,tags.ilike.%${searchTerm}%`)
+    }
+
+    // Apply filters
+    if (filters) {
+      if (filters.branch !== 'All') {
+        query = query.eq('branch', filters.branch)
+      }
+      if (filters.technology !== 'All') {
+        query = query.eq('technology', filters.technology)
+      }
+      if (filters.program !== 'All') {
+        query = query.eq('program', filters.program)
+      }
+      if (filters.duration !== 'All') {
+        query = query.eq('duration', filters.duration)
+      }
+      if (filters.priceRange !== 'All') {
+        switch (filters.priceRange) {
+          case '₱0-₱5,000':
+            query = query.gte('price', 0).lte('price', 5000)
+            break
+          case '₱5,001-₱10,000':
+            query = query.gt('price', 5000).lte('price', 10000)
+            break
+          case '₱10,001+':
+            query = query.gt('price', 10000)
+            break
+        }
+      }
+    }
+
+    return query
+  }
+
   const fetchCourses = async () => {
     try {
       setLoading(true)
       
+      // Build the query with filters and search
+      const baseQuery = buildQuery()
+      
       // Get total count
-      const { count } = await supabase
-        .from('courses')
-        .select('*', { count: 'exact', head: true })
+      const { count } = await baseQuery
       
       setTotalCount(count || 0)
       
-      // Get paginated data
-      const { data, error } = await supabase
-        .from('courses')
-        .select('*')
+      // Get paginated data with the same filters
+      const { data, error } = await buildQuery()
         .order('created_at', { ascending: false })
         .range((currentPage - 1) * ITEMS_PER_PAGE, currentPage * ITEMS_PER_PAGE - 1)
 
@@ -63,32 +117,14 @@ export default function useCourses() {
   }
 
   const handleRealtimeChange = (payload: any) => {
-    switch (payload.eventType) {
-      case 'INSERT':
-        // Only add to current page if we're on page 1
-        if (currentPage === 1) {
-          setCourses(prev => [payload.new as Course, ...prev.slice(0, ITEMS_PER_PAGE - 1)])
-        }
-        setTotalCount(prev => prev + 1)
-        break
-      case 'UPDATE':
-        setCourses(prev => 
-          prev.map(course => 
-            course.id === payload.new.id ? payload.new as Course : course
-          )
-        )
-        break
-      case 'DELETE':
-        setCourses(prev => 
-          prev.filter(course => course.id !== payload.old.id)
-        )
-        setTotalCount(prev => prev - 1)
-        break
-    }
+    // For real-time updates, we need to refetch to maintain consistency
+    // since the new/updated item might not match current filters
+    fetchCourses()
   }
 
   const nextPage = () => {
-    if (currentPage * ITEMS_PER_PAGE < totalCount) {
+    const totalPages = Math.ceil(totalCount / ITEMS_PER_PAGE)
+    if (currentPage < totalPages) {
       setCurrentPage(prev => prev + 1)
     }
   }
