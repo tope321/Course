@@ -59,7 +59,7 @@ export default function CourseCard({ course }: CourseCardProps) {
       </div>
 
       {/* Course Content */}
-      <div className="p-6 flex flex-col h-full">
+      <div className="p-6">
         {/* Title */}
         <h3 className="text-xl font-bold text-gray-900 mb-3 line-clamp-2">
           {course.title}
@@ -89,9 +89,6 @@ export default function CourseCard({ course }: CourseCardProps) {
             {course.technology}
           </span>
         </div>
-
-        {/* Spacer to push price and CTA to bottom */}
-        <div className="flex-grow"></div>
 
         {/* Price and CTA */}
         <div className="flex items-center justify-between">
