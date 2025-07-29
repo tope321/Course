@@ -9,6 +9,7 @@ interface FilterSidebarProps {
     technology: string
     program: string
     priceRange: string
+    sortBy: string
   }
   onFilterChange: (filterType: string, value: string) => void
   onClearFilters: () => void
@@ -24,6 +25,12 @@ export default function FilterSidebar({
   const branches = ['All', 'Pasig', 'Pasay', 'Jalajala']
   const programs = ['All', '2-Year Program', 'Senior High', 'Short Courses']
   const priceRanges = ['All', '₱0-₱5,000', '₱5,001-₱10,000', '₱10,001+']
+  const sortOptions = [
+    { value: 'title-asc', label: 'Title A-Z' },
+    { value: 'title-desc', label: 'Title Z-A' },
+    { value: 'price-asc', label: 'Price Low to High' },
+    { value: 'price-desc', label: 'Price High to Low' }
+  ]
 
   // Technologies grouped by program
   const technologiesByProgram: { [key: string]: string[] } = {
@@ -121,6 +128,26 @@ export default function FilterSidebar({
 
           {/* Filter content */}
           <div className="flex-1 lg:flex-none overflow-y-auto p-4 space-y-4 lg:max-h-96">
+            {/* Sort Filter */}
+            <div>
+              <h3 className="text-sm font-medium text-gray-900 mb-2">Sort By</h3>
+              <div className="space-y-2">
+                {sortOptions.map(option => (
+                  <label key={option.value} className="flex items-center">
+                    <input
+                      type="radio"
+                      name="sortBy"
+                      value={option.value}
+                      checked={filters.sortBy === option.value}
+                      onChange={(e) => onFilterChange('sortBy', e.target.value)}
+                      className="h-4 w-4 flex-shrink-0 text-blue-600 focus:ring-blue-500 border-gray-300"
+                    />
+                    <span className="ml-2 text-xs text-gray-700">{option.label}</span>
+                  </label>
+                ))}
+              </div>
+            </div>
+
             {/* Branch Filter */}
             <div>
               <h3 className="text-sm font-medium text-gray-900 mb-2">Branch</h3>

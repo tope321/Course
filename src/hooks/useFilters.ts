@@ -5,6 +5,7 @@ interface Filters {
   technology: string
   program: string
   priceRange: string
+  sortBy: string
 }
 
 export default function useFilters() {
@@ -12,7 +13,8 @@ export default function useFilters() {
     branch: 'All',
     technology: 'All',
     program: 'All',
-    priceRange: 'All'
+    priceRange: 'All',
+    sortBy: 'title-asc'
   })
 
   const updateFilter = (filterType: keyof Filters, value: string) => {
@@ -24,7 +26,8 @@ export default function useFilters() {
       branch: 'All',
       program: 'All',
       technology: 'All',
-      priceRange: 'All'
+      priceRange: 'All',
+      sortBy: 'title-asc'
     })
   }
 

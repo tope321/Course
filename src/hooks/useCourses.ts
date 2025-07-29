@@ -10,6 +10,7 @@ interface UseCoursesProps {
     technology: string
     program: string
     priceRange: string
+    sortBy: string
   }
 }
 
@@ -89,6 +90,36 @@ export default function useCourses({ searchTerm = '', filters }: UseCoursesProps
     return query
   }
 
+  const getSortColumn = () => {
+    if (!filters?.sortBy) return 'title'
+    
+    switch (filters.sortBy) {
+      case 'title-asc':
+      case 'title-desc':
+        return 'title'
+      case 'price-asc':
+      case 'price-desc':
+        return 'price'
+      default:
+        return 'title'
+    }
+  }
+
+  const getSortOrder = () => {
+    if (!filters?.sortBy) return true
+    
+    switch (filters.sortBy) {
+      case 'title-asc':
+      case 'price-asc':
+        return true
+      case 'title-desc':
+      case 'price-desc':
+        return false
+      default:
+        return true
+    }
+  }
+
   const fetchCourses = async () => {
     try {
       setLoading(true)
@@ -103,7 +134,7 @@ export default function useCourses({ searchTerm = '', filters }: UseCoursesProps
       
       // Get paginated data with the same filters
       const { data, error } = await buildQuery()
-        .order('created_at', { ascending: false })
+        .order(getSortColumn(), { ascending: getSortOrder() })
         .range((currentPage - 1) * ITEMS_PER_PAGE, currentPage * ITEMS_PER_PAGE - 1)
 
       if (error) throw error
