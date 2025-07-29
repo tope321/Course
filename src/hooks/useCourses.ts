@@ -25,6 +25,11 @@ export default function useCourses({ searchTerm = '', filters }: UseCoursesProps
     setCurrentPage(1)
   }, [searchTerm, filters])
 
+  // Scroll to top when page changes
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  }, [currentPage])
+
   useEffect(() => {
     fetchCourses()
   }, [currentPage, searchTerm, filters])
