@@ -30,14 +30,14 @@ export default function FilterSidebar({
   // Technologies grouped by program
   const technologiesByProgram: { [key: string]: string[] } = {
     '2-Year Program': [
-  'All',
+      'All',
+      'Digital Arts & Design',
       'Information Technology',
       'Network System & Security Administrator',
       'Automotive Technology',
       'Industrial Electrical Technology',
       'Industrial Automation & Manufacturing Technology',
       'Semiconductor & Manufacturing Technology',
-      'Advanced Industrial Training Program'      
     ],
     'Senior High': [
       'All',
